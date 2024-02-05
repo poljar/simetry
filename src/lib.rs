@@ -2,19 +2,24 @@ pub use racing_flags::RacingFlags;
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::time::Duration;
-use tokio::select;
 use uom::si::f64::{AngularVelocity, Velocity};
 
 pub mod assetto_corsa;
 pub mod assetto_corsa_competizione;
+#[cfg(target_family = "windows")]
 pub mod dirt_rally_2;
 #[cfg(feature = "unstable_generic_http_client")]
 pub mod generic_http;
+#[cfg(target_family = "windows")]
 pub mod iracing;
+#[cfg(target_family = "windows")]
 pub mod raceroom_racing_experience;
 mod racing_flags;
+#[cfg(target_family = "windows")]
 pub mod rfactor_2;
+#[cfg(target_family = "windows")]
 pub mod truck_simulator;
+#[cfg(target_family = "windows")]
 mod windows_util;
 
 /// Sim that we can connect to via the common [`connect`] function.
@@ -33,6 +38,7 @@ pub trait Simetry {
 pub struct SimetryConnectionBuilder {
     #[cfg(feature = "unstable_generic_http_client")]
     generic_http_uri: String,
+    #[cfg(target_family = "windows")]
     dirt_rally_2_uri: String,
     retry_delay: Duration,
 }
@@ -42,6 +48,7 @@ impl Default for SimetryConnectionBuilder {
         Self {
             #[cfg(feature = "unstable_generic_http_client")]
             generic_http_uri: generic_http::DEFAULT_URI.to_string(),
+            #[cfg(target_family = "windows")]
             dirt_rally_2_uri: dirt_rally_2::Client::DEFAULT_URI.to_string(),
             retry_delay: Duration::from_secs(5),
         }
@@ -55,6 +62,7 @@ impl SimetryConnectionBuilder {
         self
     }
 
+    #[cfg(target_family = "windows")]
     pub fn dirt_rally_2_uri(mut self, uri: String) -> Self {
         self.dirt_rally_2_uri = uri;
         self
@@ -65,7 +73,25 @@ impl SimetryConnectionBuilder {
         self
     }
 
+    #[cfg(target_family = "unix")]
     pub async fn connect(self) -> Box<dyn Simetry + Send + Sync + 'static> {
+        use tokio::select;
+
+        let retry_delay = self.retry_delay;
+        let assetto_corsa_future = assetto_corsa::Client::connect(retry_delay);
+        let assetto_corsa_competizione_future =
+            assetto_corsa_competizione::Client::connect(retry_delay);
+
+        select! {
+            x = assetto_corsa_future => Box::new(x),
+            x = assetto_corsa_competizione_future => Box::new(x),
+        }
+    }
+
+    #[cfg(target_family = "windows")]
+    pub async fn connect(self) -> Box<dyn Simetry + Send + Sync + 'static> {
+        use tokio::select;
+
         let retry_delay = self.retry_delay;
         let iracing_future = iracing::Client::connect(retry_delay);
         let assetto_corsa_future = assetto_corsa::Client::connect(retry_delay);
@@ -96,7 +122,10 @@ impl SimetryConnectionBuilder {
     }
 }
 
-#[cfg(not(feature = "unstable_generic_http_client"))]
+#[cfg(all(
+    target_family = "windows",
+    not(feature = "unstable_generic_http_client")
+))]
 async fn never_resolved() -> iracing::Client {
     loop {
         tokio::time::sleep(Duration::from_secs(1_000_000_000)).await;
