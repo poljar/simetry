@@ -5,9 +5,7 @@ use std::time::Duration;
 use tokio::select;
 use uom::si::f64::{AngularVelocity, Velocity};
 
-#[cfg(windows)]
 pub mod assetto_corsa;
-#[cfg(windows)]
 pub mod assetto_corsa_competizione;
 pub mod dirt_rally_2;
 #[cfg(feature = "unstable_generic_http_client")]
