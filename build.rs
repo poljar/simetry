@@ -6,7 +6,7 @@ fn main() {
 
     let bindings = bindgen::Builder::default()
         .header("src/raceroom_racing_experience/r3e.h")
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .derive_partialeq(true)
         .derive_eq(true)
         .derive_hash(true)
@@ -21,7 +21,7 @@ fn main() {
     let bindings = bindgen::Builder::default()
         .header("src/truck_simulator/scs-sdk-plugin/scssdk.h")
         .header("src/truck_simulator/scs-sdk-plugin/scs-telemetry-common.hpp")
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .derive_partialeq(true)
         .derive_eq(true)
         .derive_hash(true)
