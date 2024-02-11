@@ -11,9 +11,8 @@ use std::time::{Duration, SystemTime};
 use tokio::task::spawn_blocking;
 use windows::core::PCSTR;
 use windows::Win32::System::Threading::{
-    OpenEventA, WaitForSingleObject, SYNCHRONIZATION_SYNCHRONIZE,
+    OpenEventA, WaitForSingleObject, INFINITE, SYNCHRONIZATION_SYNCHRONIZE,
 };
-use windows::Win32::System::WindowsProgramming::INFINITE;
 use yaml_rust::Yaml;
 
 static DATAVALIDEVENTNAME: &[u8] = b"Local\\IRSDKDataValidEvent\0";

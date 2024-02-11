@@ -4,7 +4,7 @@ use std::time::Duration;
 use windows::core::PCSTR;
 use windows::Win32::Foundation::{CloseHandle, HANDLE};
 use windows::Win32::System::Memory::{
-    MapViewOfFile, OpenFileMappingA, UnmapViewOfFile, FILE_MAP_READ,
+    MapViewOfFile, OpenFileMappingA, UnmapViewOfFile, FILE_MAP_READ, MEMORY_MAPPED_VIEW_ADDRESS,
 };
 
 #[derive(Debug)]
@@ -29,22 +29,23 @@ impl SafeHandle {
 impl Drop for SafeHandle {
     fn drop(&mut self) {
         unsafe {
-            CloseHandle(self.inner);
+            // Can't really do much here if there's an error, let's ignore it.
+            let _ = CloseHandle(self.inner);
         }
     }
 }
 
 #[derive(Debug)]
 pub struct SafeFileView {
-    pub inner: *const c_void,
+    pub inner: MEMORY_MAPPED_VIEW_ADDRESS,
 }
 
 unsafe impl Send for SafeFileView {}
 unsafe impl Sync for SafeFileView {}
 
 impl SafeFileView {
-    pub fn new(inner: *const c_void) -> Option<Self> {
-        if inner.is_null() {
+    pub fn new(inner: MEMORY_MAPPED_VIEW_ADDRESS) -> Option<Self> {
+        if inner.Value.is_null() {
             None
         } else {
             Some(Self { inner })
@@ -52,14 +53,15 @@ impl SafeFileView {
     }
 
     pub unsafe fn get(&self) -> *const c_void {
-        self.inner
+        self.inner.Value
     }
 }
 
 impl Drop for SafeFileView {
     fn drop(&mut self) {
         unsafe {
-            UnmapViewOfFile(self.inner);
+            // Can't really do much here if there's an error, let's ignore it.
+            let _ = UnmapViewOfFile(self.inner);
         }
     }
 }

@@ -86,7 +86,9 @@ impl<T: Into<RawParams>> Command<T> {
     fn run(&self, args: T) {
         let params = args.into();
         let param1 = make_long(self.code, params.var1) as usize;
-        unsafe {
+
+        // TODO: We should probably propagate this error.
+        let _ = unsafe {
             SendNotifyMessageA(
                 HWND(0xffff),
                 *IRACING_BROADCAST_MSG_ID,
