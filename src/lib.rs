@@ -5,16 +5,23 @@ use std::time::Duration;
 use tokio::select;
 use uom::si::f64::{AngularVelocity, Velocity};
 
+#[cfg(windows)]
 pub mod assetto_corsa;
+#[cfg(windows)]
 pub mod assetto_corsa_competizione;
 pub mod dirt_rally_2;
 #[cfg(feature = "unstable_generic_http_client")]
 pub mod generic_http;
+#[cfg(windows)]
 pub mod iracing;
+#[cfg(windows)]
 pub mod raceroom_racing_experience;
 mod racing_flags;
+#[cfg(windows)]
 pub mod rfactor_2;
+#[cfg(windows)]
 pub mod truck_simulator;
+#[cfg(windows)]
 mod windows_util;
 
 /// Sim that we can connect to via the common [`connect`] function.
@@ -65,6 +72,26 @@ impl SimetryConnectionBuilder {
         self
     }
 
+    #[cfg(unix)]
+    pub async fn connect(self) -> Box<dyn Simetry + Send + Sync + 'static> {
+        let retry_delay = self.retry_delay;
+
+        #[cfg(feature = "unstable_generic_http_client")]
+        let generic_http_future =
+            generic_http::GenericHttpClient::connect(&self.generic_http_uri, retry_delay);
+        #[cfg(not(feature = "unstable_generic_http_client"))]
+        let generic_http_future = never_resolved();
+
+        let dirt_rally_2_future =
+            dirt_rally_2::Client::connect(&self.dirt_rally_2_uri, retry_delay);
+
+        select! {
+            x = generic_http_future => Box::new(x),
+            x = dirt_rally_2_future => Box::new(x),
+        }
+    }
+
+    #[cfg(windows)]
     pub async fn connect(self) -> Box<dyn Simetry + Send + Sync + 'static> {
         let retry_delay = self.retry_delay;
         let iracing_future = iracing::Client::connect(retry_delay);
@@ -97,7 +124,7 @@ impl SimetryConnectionBuilder {
 }
 
 #[cfg(not(feature = "unstable_generic_http_client"))]
-async fn never_resolved() -> iracing::Client {
+async fn never_resolved() -> dirt_rally_2::Client {
     loop {
         tokio::time::sleep(Duration::from_secs(1_000_000_000)).await;
     }

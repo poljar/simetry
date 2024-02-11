@@ -1,9 +1,10 @@
-use simetry::iracing::DiskClient;
-use std::env;
-use std::thread::sleep;
-use std::time::Duration;
-
+#[cfg(windows)]
 fn main() {
+    use simetry::iracing::DiskClient;
+    use std::env;
+    use std::thread::sleep;
+    use std::time::Duration;
+
     let mut client =
         DiskClient::open(env::args().nth(1).expect("Filename argument required")).unwrap();
     for (key, val) in client.variables() {
@@ -15,4 +16,9 @@ fn main() {
         println!("Received new data");
         sleep(Duration::from_millis(16));
     }
+}
+
+#[cfg(unix)]
+fn main() -> anyhow::Result<()> {
+    anyhow::bail!("This example only works on Windows")
 }

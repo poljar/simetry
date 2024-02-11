@@ -1,8 +1,9 @@
-use simetry::iracing::Client;
-use std::time::Duration;
-
+#[cfg(windows)]
 #[tokio::main]
 async fn main() {
+    use simetry::iracing::Client;
+    use std::time::Duration;
+
     loop {
         println!("Starting connection to iRacing...");
         let mut client = Client::connect(Duration::from_secs(1)).await;
@@ -12,4 +13,9 @@ async fn main() {
         }
         println!("Connection finished!");
     }
+}
+
+#[cfg(unix)]
+fn main() -> anyhow::Result<()> {
+    anyhow::bail!("This example only works on Windows")
 }

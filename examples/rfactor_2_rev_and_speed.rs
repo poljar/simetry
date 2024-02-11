@@ -1,7 +1,8 @@
-use simetry::rfactor_2::Client;
-
+#[cfg(windows)]
 #[tokio::main]
 async fn main() {
+    use simetry::rfactor_2::Client;
+
     loop {
         println!("Starting connection to rFactor 2...");
         let mut client = Client::connect().await;
@@ -16,4 +17,9 @@ async fn main() {
         }
         println!("Connection finished!");
     }
+}
+
+#[cfg(unix)]
+fn main() -> anyhow::Result<()> {
+    anyhow::bail!("This example only works on Windows")
 }
