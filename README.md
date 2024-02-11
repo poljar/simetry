@@ -10,10 +10,14 @@ Currently supported sims:
 * iRacing
 * Assetto Corsa
 * Assetto Corsa Competizione
-* rFactor 2 (extra steps for enabling described below)
+* rFactor 2
 * DiRT Rally 2.0
-* Euro Truck Simulator 2 (extra steps for enabling described below)
-* American Truck Simulator (extra steps for enabling described below)
+* Euro Truck Simulator 2
+* American Truck Simulator
+
+Beware that some of the titles require additional steps, if you are on Linux
+titles might also require additional steps. Take a look at the [Extra
+Configuration](#extra-configuration) section for more info.
 
 Beyond that, an interface for a generic HTTP server exists, allowing you to easily emulate any sim
 to see the functionality of your software that way, instead of having to run the sim and replicating
@@ -35,6 +39,10 @@ present there, you can use the interface of the individual sims.
 
 ## Extra Configuration
 
+### Linux
+
+[bridge]
+
 ### rFactor 2
 
 Requires adding the DLLs from https://github.com/TheIronWolfModding/rF2SharedMemoryMapPlugin.
@@ -45,3 +53,5 @@ Requires adding the DLLs from https://github.com/RenCloud/scs-sdk-plugin.
 
 Alternatively supporting also https://github.com/Funbit/ets2-telemetry-server
 via `simetry::truck_simulator::json_client::Client`.
+
+[bridge]: https://github.com/poljar/shm-bridge
