@@ -190,9 +190,9 @@ pub struct PageFilePhysics {
     pub water_temp: f32,
     /// Brake pressure [FL, FR, RL, RR] see Appendix 2
     pub brake_pressure: [f32; 4],
-    /// Brake pad compund front
+    /// Brake pad compound front
     pub front_brake_compound: i32,
-    /// Brake pad compund rear
+    /// Brake pad compound rear
     pub rear_brake_compound: i32,
     /// Brake pad wear [FL, FR, RL, RR]
     pub pad_life: [f32; 4],

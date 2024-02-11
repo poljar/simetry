@@ -363,7 +363,7 @@ typedef struct
     //  1 = allowed
     r3e_int32 yellowOvertake;
 
-    // Whether you have gained positions illegaly under yellow flag to give back
+    // Whether you have gained positions illegally under yellow flag to give back
     // -1 = no data
     //  0 = no positions gained
     //  n = number of positions gained

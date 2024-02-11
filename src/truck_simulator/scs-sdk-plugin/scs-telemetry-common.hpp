@@ -139,9 +139,9 @@ typedef struct scsTrailer_s { // Size: 1560
 /**
    *  \brief Telemetry object
    *
-   * instead to use a clear object like that in c# we want to create this one easy to parse and modifyable
+   * instead to use a clear object like that in c# we want to create this one easy to parse and modifiable
    *
-   * Look in the c header of the sdk for more desription or in the c# description
+   * Look in the c header of the sdk for more description or in the c# description
    *
    * Arrays must be set here and have all local parameter for their size
    */
@@ -527,7 +527,7 @@ typedef struct scsTelemetryMap_s
 		bool ferry;
 		bool train;
 		bool refuel;
-		bool refuelPayed;
+		bool refuelPaid;
 	}special_b;
 
 	char buffer_special[90];

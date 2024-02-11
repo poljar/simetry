@@ -246,7 +246,7 @@ pub struct Physics {
     pub brake_bias: f32,
     /// Car velocity vector in local coordinates
     pub local_velocity: Vector3<f32>,
-    /// Water tempearture
+    /// Water temperature
     pub water_temperature: f32,
     /// Brake pad compound front
     pub front_brake_compound: i32,
