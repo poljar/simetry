@@ -14,6 +14,8 @@ pub mod dirt_rally_2;
 pub mod generic_http;
 #[cfg(windows)]
 pub mod iracing;
+#[cfg(unix)]
+mod linux_util;
 #[cfg(windows)]
 pub mod raceroom_racing_experience;
 mod racing_flags;
